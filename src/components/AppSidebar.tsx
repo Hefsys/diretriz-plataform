@@ -76,8 +76,6 @@ export function AppSidebar() {
     { title: "Comissão x eSocial",url: "/comissao-esocial",icon: Users, moduleId: "financeiro:comissao" },
     { title: "Finance Insight",  url: "/finance-insight",  icon: TrendingUp, moduleId: "financeiro:insight" },
     { title: "Contas a Pagar",   url: "/contas-pagar",     icon: CreditCard, moduleId: "financeiro:contas-pagar" },
-    { title: "Conciliação",      url: "/conciliacao",      icon: ListChecks, moduleId: "financeiro:conciliacao" },
-    { title: "Regras",           url: "/regras-conciliacao", icon: ListChecks, moduleId: "financeiro:regras" },
     { title: "Obrigações",       url: "/obrigacoes",       icon: ListChecks, moduleId: "financeiro:obrigacoes" },
   ].filter(item => temModulo(item.moduleId));
 

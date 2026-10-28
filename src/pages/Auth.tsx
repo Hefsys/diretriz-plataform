@@ -101,7 +101,7 @@ export default function Auth() {
       <div className="min-h-screen flex">
         <div className="hidden lg:flex lg:w-1/2 bg-[#10143D] items-center justify-center relative overflow-hidden">
           <div className="relative z-10 text-center px-12">
-            <img src="/logo-nova.png" alt="Diretriz" className="h-[60px] w-auto mx-auto mb-8 object-contain" />
+            <img src="/logo-nova.png" alt="Diretriz" className="h-40 xl:h-52 w-auto mx-auto mb-6 object-contain" />
             <p className="text-white/70 text-lg font-light leading-relaxed">
               Sistema de Monitoramento Fiscal
             </p>
@@ -164,7 +164,7 @@ export default function Auth() {
           </svg>
         </div>
         <div className="relative z-10 text-center px-12">
-          <img src="/logo-nova.png" alt="Diretriz" className="h-[60px] w-auto mx-auto mb-8 object-contain" />
+          <img src="/logo-nova.png" alt="Diretriz" className="h-40 xl:h-52 w-auto mx-auto mb-6 object-contain" />
           <p className="text-white/70 text-lg font-light leading-relaxed">
             Sistema de Monitoramento Fiscal
           </p>

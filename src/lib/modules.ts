@@ -56,8 +56,6 @@ export const MODULES: { id: ModuleId; label: string; url: string; icon: LucideIc
       { id: "financeiro:comissao", label: "Comissão x eSocial" },
       { id: "financeiro:insight", label: "Finance Insight" },
       { id: "financeiro:contas-pagar", label: "Contas a Pagar" },
-      { id: "financeiro:conciliacao", label: "Conciliação" },
-      { id: "financeiro:regras", label: "Regras" },
       { id: "financeiro:obrigacoes", label: "Obrigações" }
     ]
   },
