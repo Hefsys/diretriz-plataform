@@ -40,6 +40,14 @@ import ComissaoESocialHistorico from "./pages/ComissaoESocialHistorico";
 import ConfrontoXML from "./pages/ConfrontoXML";
 import ConfrontoXMLFechamentoDetalhe from "./pages/ConfrontoXMLFechamentoDetalhe";
 import ConciliacaoISS from "./pages/ConciliacaoISS";
+import DpAdmissoes from "./pages/dp/DpAdmissoes";
+import DpFolha from "./pages/dp/DpFolha";
+import DpCompetencia from "./pages/dp/DpCompetencia";
+import AdmissaoPublica from "./pages/dp/AdmissaoPublica";
+import PortalFolha from "./pages/dp/PortalFolha";
+import ApuracaoLP from "./pages/fiscal/ApuracaoLP";
+import ApuracaoLPEmpresa from "./pages/fiscal/ApuracaoLPEmpresa";
+import { ModuloGuard } from "@/components/ModuloGuard";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +62,9 @@ const App = () => (
           <Routes>
             <Route path="/auth" element={<Auth />} />
             <Route path="/auth/banco" element={<AuthBanco />} />
+            {/* Páginas públicas do Dpto Pessoal (abertas pelo cliente, sem login) */}
+            <Route path="/admissao/:escritorio" element={<AdmissaoPublica />} />
+            <Route path="/folha/:token" element={<PortalFolha />} />
             <Route
               element={
                 <ProtectedRoute>
@@ -91,6 +102,12 @@ const App = () => (
               <Route path="/confronto-xml" element={<ConfrontoXML />} />
               <Route path="/confronto-xml/fechamento/:fechamentoId" element={<ConfrontoXMLFechamentoDetalhe />} />
               <Route path="/conciliacao-iss" element={<ConciliacaoISS />} />
+              <Route path="/dp/admissoes" element={<ModuloGuard modulo="dp:admissoes"><DpAdmissoes /></ModuloGuard>} />
+              <Route path="/dp/variaveis" element={<ModuloGuard modulo="dp:variaveis"><DpFolha key="variaveis" modulo="variaveis" /></ModuloGuard>} />
+              <Route path="/dp/vr" element={<ModuloGuard modulo="dp:vr"><DpFolha key="vr" modulo="vr" /></ModuloGuard>} />
+              <Route path="/dp/competencia/:id" element={<DpCompetencia />} />
+              <Route path="/fiscal/apuracao-lp" element={<ModuloGuard modulo="fiscal:apuracao-lp"><ApuracaoLP /></ModuloGuard>} />
+              <Route path="/fiscal/apuracao-lp/:empresaId/:ano" element={<ModuloGuard modulo="fiscal:apuracao-lp"><ApuracaoLPEmpresa /></ModuloGuard>} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

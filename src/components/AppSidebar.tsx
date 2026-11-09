@@ -4,7 +4,7 @@ import {
   Users, KeyRound, MailOpen, ChevronRight, Stethoscope,
   Banknote, CreditCard, ListChecks, Package, UserCheck, ClipboardList,
   CalendarDays, BarChart2, User, BookOpen, Bot, TrendingUp, FileBarChart,
-  ScanSearch, Receipt,
+  ScanSearch, Receipt, Briefcase, UserPlus, Wallet, Ticket, Calculator, FileSearch,
 } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -67,13 +67,10 @@ export function AppSidebar() {
     { title: "Certidões",          url: "/certidoes",        icon: FileCheck,   moduleId: "certidoes:dashboard" },
     { title: "Caixas Postais",     url: "/caixas-postais",   icon: MailOpen,    moduleId: "caixas:dashboard" },
     { title: "Certificados",       url: "/certificados",     icon: KeyRound,    moduleId: "certificados:ativos" },
-    { title: "Confronto XML",      url: "/confronto-xml",    icon: ScanSearch,  moduleId: "certidoes:confronto-xml" },
-    { title: "Conciliação ISS",    url: "/conciliacao-iss",  icon: Receipt,     moduleId: "certidoes:conciliacao-iss" },
   ].filter(item => temModulo(item.moduleId));
 
   const financeiroItems = [
     { title: "Visão Geral",      url: "/financeiro",       icon: Banknote, moduleId: "financeiro:visao" },
-    { title: "Comissão x eSocial",url: "/comissao-esocial",icon: Users, moduleId: "financeiro:comissao" },
     { title: "Finance Insight",  url: "/finance-insight",  icon: TrendingUp, moduleId: "financeiro:insight" },
     { title: "Contas a Pagar",   url: "/contas-pagar",     icon: CreditCard, moduleId: "financeiro:contas-pagar" },
     { title: "Obrigações",       url: "/obrigacoes",       icon: ListChecks, moduleId: "financeiro:obrigacoes" },
@@ -84,6 +81,19 @@ export function AppSidebar() {
     { title: "Calendário", url: "/rotinas/calendario",  icon: CalendarDays, moduleId: "rotinas:calendario" },
     { title: "Dashboard",  url: "/rotinas/dashboard",   icon: BarChart2, moduleId: "rotinas:dashboard" },
     { title: "Automação",  url: "/rotinas/automacao",   icon: Bot, moduleId: "rotinas:automacao" },
+  ].filter(item => temModulo(item.moduleId));
+
+  const dpItems = [
+    { title: "Admissões",          url: "/dp/admissoes", icon: UserPlus, moduleId: "dp:admissoes" },
+    { title: "Variáveis da Folha", url: "/dp/variaveis", icon: Wallet,   moduleId: "dp:variaveis" },
+    { title: "VR",                 url: "/dp/vr",        icon: Ticket,   moduleId: "dp:vr" },
+    { title: "Análise da Folha",   url: "/comissao-esocial", icon: FileSearch, moduleId: "dp:analise-folha" },
+  ].filter(item => temModulo(item.moduleId) || (item.moduleId === "dp:analise-folha" && temModulo("financeiro:comissao")));
+
+  const fiscalItems = [
+    { title: "Apuração Lucro Presumido", url: "/fiscal/apuracao-lp", icon: Calculator, moduleId: "fiscal:apuracao-lp" },
+    { title: "Confronto XML",            url: "/confronto-xml",      icon: ScanSearch, moduleId: "certidoes:confronto-xml" },
+    { title: "Conciliação ISS",          url: "/conciliacao-iss",    icon: Receipt,    moduleId: "certidoes:conciliacao-iss" },
   ].filter(item => temModulo(item.moduleId));
 
   const relatoriosItems = [
@@ -100,7 +110,7 @@ export function AppSidebar() {
   ].filter(item => !item.adminOnly || isAdmin);
 
   const showMonitoramento = monitoramentoItems.length > 0;
-  const showModulo = showMonitoramento || financeiroItems.length > 0 || rotinasItems.length > 0 || relatoriosItems.length > 0;
+  const showModulo = showMonitoramento || financeiroItems.length > 0 || rotinasItems.length > 0 || dpItems.length > 0 || fiscalItems.length > 0 || relatoriosItems.length > 0;
 
   return (
     <Sidebar collapsible="icon">
@@ -206,6 +216,54 @@ export function AppSidebar() {
                           <NavSection icon={ClipboardList} label="Rotinas">
                             <SidebarMenuSub>
                               {rotinasItems.map((item) => (
+                                <SidebarMenuSubItem key={item.title}>
+                                  <SidebarMenuSubButton asChild>
+                                    <NavLink
+                                      to={item.url}
+                                      className="hover:bg-sidebar-accent text-sidebar-foreground/70 hover:text-sidebar-foreground"
+                                      activeClassName="text-sidebar-foreground font-medium"
+                                    >
+                                      <item.icon className="h-3.5 w-3.5 shrink-0" />
+                                      <span>{item.title}</span>
+                                    </NavLink>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              ))}
+                            </SidebarMenuSub>
+                          </NavSection>
+                        </SidebarMenuItem>
+                      )}
+
+                      {/* Fiscal */}
+                      {fiscalItems.length > 0 && (
+                        <SidebarMenuItem>
+                          <NavSection icon={Calculator} label="Fiscal">
+                            <SidebarMenuSub>
+                              {fiscalItems.map((item) => (
+                                <SidebarMenuSubItem key={item.title}>
+                                  <SidebarMenuSubButton asChild>
+                                    <NavLink
+                                      to={item.url}
+                                      className="hover:bg-sidebar-accent text-sidebar-foreground/70 hover:text-sidebar-foreground"
+                                      activeClassName="text-sidebar-foreground font-medium"
+                                    >
+                                      <item.icon className="h-3.5 w-3.5 shrink-0" />
+                                      <span>{item.title}</span>
+                                    </NavLink>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              ))}
+                            </SidebarMenuSub>
+                          </NavSection>
+                        </SidebarMenuItem>
+                      )}
+
+                      {/* Dpto Pessoal (Folha) */}
+                      {dpItems.length > 0 && (
+                        <SidebarMenuItem>
+                          <NavSection icon={Briefcase} label="Dpto Pessoal">
+                            <SidebarMenuSub>
+                              {dpItems.map((item) => (
                                 <SidebarMenuSubItem key={item.title}>
                                   <SidebarMenuSubButton asChild>
                                     <NavLink

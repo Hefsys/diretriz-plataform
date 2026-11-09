@@ -1,4 +1,4 @@
-import { FileCheck, KeyRound, MailOpen, Banknote, ClipboardList, FileBarChart, type LucideIcon } from "lucide-react";
+import { FileCheck, KeyRound, MailOpen, Banknote, ClipboardList, FileBarChart, Briefcase, Calculator, type LucideIcon } from "lucide-react";
 
 export type ModuleId = string;
 
@@ -70,6 +70,29 @@ export const MODULES: { id: ModuleId; label: string; url: string; icon: LucideIc
       { id: "rotinas:calendario", label: "Calendário" },
       { id: "rotinas:dashboard", label: "Dashboard" },
       { id: "rotinas:automacao", label: "Automação" }
+    ]
+  },
+  {
+    id: "dp",
+    label: "Dpto Pessoal",
+    url: "/dp/admissoes",
+    icon: Briefcase,
+    description: "Folha: admissões, variáveis e VR enviados pelos clientes",
+    subModules: [
+      { id: "dp:admissoes", label: "Admissões" },
+      { id: "dp:variaveis", label: "Variáveis da Folha" },
+      { id: "dp:vr", label: "VR" },
+      { id: "dp:analise-folha", label: "Análise da Folha (Comissão x eSocial)" }
+    ]
+  },
+  {
+    id: "fiscal",
+    label: "Fiscal",
+    url: "/fiscal/apuracao-lp",
+    icon: Calculator,
+    description: "Apuração de tributos do Lucro Presumido",
+    subModules: [
+      { id: "fiscal:apuracao-lp", label: "Apuração Lucro Presumido" }
     ]
   },
   {
