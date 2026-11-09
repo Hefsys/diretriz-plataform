@@ -17,9 +17,7 @@ export const MODULES: { id: ModuleId; label: string; url: string; icon: LucideIc
     subModules: [
       { id: "certidoes:dashboard", label: "Dashboard" },
       { id: "certidoes:empresas", label: "Empresas" },
-      { id: "certidoes:logs", label: "Logs" },
-      { id: "certidoes:confronto-xml", label: "Confronto XML" },
-      { id: "certidoes:conciliacao-iss", label: "Conciliação ISS" }
+      { id: "certidoes:logs", label: "Logs" }
     ]
   },
   {
@@ -90,9 +88,11 @@ export const MODULES: { id: ModuleId; label: string; url: string; icon: LucideIc
     label: "Fiscal",
     url: "/fiscal/apuracao-lp",
     icon: Calculator,
-    description: "Apuração de tributos do Lucro Presumido",
+    description: "Apuração do Lucro Presumido, Confronto XML e Conciliação ISS",
     subModules: [
-      { id: "fiscal:apuracao-lp", label: "Apuração Lucro Presumido" }
+      { id: "fiscal:apuracao-lp", label: "Apuração Lucro Presumido" },
+      { id: "fiscal:confronto-xml", label: "Confronto XML" },
+      { id: "fiscal:conciliacao-iss", label: "Conciliação ISS" }
     ]
   },
   {

@@ -92,8 +92,8 @@ export function AppSidebar() {
 
   const fiscalItems = [
     { title: "Apuração Lucro Presumido", url: "/fiscal/apuracao-lp", icon: Calculator, moduleId: "fiscal:apuracao-lp" },
-    { title: "Confronto XML",            url: "/confronto-xml",      icon: ScanSearch, moduleId: "certidoes:confronto-xml" },
-    { title: "Conciliação ISS",          url: "/conciliacao-iss",    icon: Receipt,    moduleId: "certidoes:conciliacao-iss" },
+    { title: "Confronto XML",            url: "/confronto-xml",      icon: ScanSearch, moduleId: "fiscal:confronto-xml" },
+    { title: "Conciliação ISS",          url: "/conciliacao-iss",    icon: Receipt,    moduleId: "fiscal:conciliacao-iss" },
   ].filter(item => temModulo(item.moduleId));
 
   const relatoriosItems = [
