@@ -311,6 +311,7 @@ export default function DashboardPage() {
     <div className="p-8 space-y-6 max-w-[1500px] mx-auto">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-primary">Dpto Pessoal · Análise da Folha</p>
           <h1 className="text-3xl font-bold">{data.atual.empresa ?? "Empresa"}</h1>
           <p className="text-muted-foreground text-sm">
             CNPJ {data.atual.cnpj ?? "—"} · Competência <strong>{data.atual.competencia}</strong>

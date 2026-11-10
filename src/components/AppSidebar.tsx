@@ -88,7 +88,7 @@ export function AppSidebar() {
     { title: "Variáveis da Folha", url: "/dp/variaveis", icon: Wallet,   moduleId: "dp:variaveis" },
     { title: "VR",                 url: "/dp/vr",        icon: Ticket,   moduleId: "dp:vr" },
     { title: "Análise da Folha",   url: "/comissao-esocial", icon: FileSearch, moduleId: "dp:analise-folha" },
-  ].filter(item => temModulo(item.moduleId) || (item.moduleId === "dp:analise-folha" && temModulo("financeiro:comissao")));
+  ].filter(item => temModulo(item.moduleId));
 
   const fiscalItems = [
     { title: "Apuração Lucro Presumido", url: "/fiscal/apuracao-lp", icon: Calculator, moduleId: "fiscal:apuracao-lp" },

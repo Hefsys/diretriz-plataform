@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useMemo, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -312,9 +312,13 @@ export default function NovaConferencia() {
 
   return (
     <div className="p-8 space-y-6 max-w-[1400px] mx-auto">
-      <header>
-        <h1 className="text-3xl font-bold">Nova conferência</h1>
-        <p className="text-muted-foreground mt-1">PDF do Domínio × planilhas de comissão × eSocial</p>
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-primary">Dpto Pessoal · Análise da Folha</p>
+          <h1 className="text-3xl font-bold">Nova conferência</h1>
+          <p className="text-muted-foreground mt-1">PDF do Domínio × planilhas de comissão × eSocial</p>
+        </div>
+        <Button variant="outline" asChild><Link to="/comissao-esocial/historico">Histórico de conferências</Link></Button>
       </header>
 
       <Card className="p-6 space-y-5">

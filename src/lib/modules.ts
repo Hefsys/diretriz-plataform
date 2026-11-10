@@ -51,7 +51,6 @@ export const MODULES: { id: ModuleId; label: string; url: string; icon: LucideIc
     description: "Gestão financeira, contas a pagar e conciliação",
     subModules: [
       { id: "financeiro:visao", label: "Visão Geral" },
-      { id: "financeiro:comissao", label: "Comissão x eSocial" },
       { id: "financeiro:insight", label: "Finance Insight" },
       { id: "financeiro:contas-pagar", label: "Contas a Pagar" },
       { id: "financeiro:obrigacoes", label: "Obrigações" }

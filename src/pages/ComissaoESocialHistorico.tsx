@@ -53,6 +53,7 @@ export default function ComissaoESocialHistorico() {
     <div className="p-8 space-y-6 max-w-[1400px] mx-auto">
       <header className="flex items-center justify-between">
         <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-primary">Dpto Pessoal · Análise da Folha</p>
           <h1 className="text-3xl font-bold">Histórico</h1>
           <p className="text-muted-foreground mt-1">Conferências salvas</p>
         </div>

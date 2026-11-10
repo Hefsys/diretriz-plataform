@@ -96,9 +96,9 @@ const App = () => (
               <Route path="/finance-insight" element={<FinanceInsight />} />
               <Route path="/relatorios" element={<Relatorios />} />
               <Route path="/departamentos" element={<Departamentos />} />
-              <Route path="/comissao-esocial" element={<ComissaoESocial />} />
-              <Route path="/comissao-esocial/dashboard/:id" element={<ComissaoESocialDashboard />} />
-              <Route path="/comissao-esocial/historico" element={<ComissaoESocialHistorico />} />
+              <Route path="/comissao-esocial" element={<ModuloGuard modulo="dp:analise-folha"><ComissaoESocial /></ModuloGuard>} />
+              <Route path="/comissao-esocial/dashboard/:id" element={<ModuloGuard modulo="dp:analise-folha"><ComissaoESocialDashboard /></ModuloGuard>} />
+              <Route path="/comissao-esocial/historico" element={<ModuloGuard modulo="dp:analise-folha"><ComissaoESocialHistorico /></ModuloGuard>} />
               <Route path="/confronto-xml" element={<ModuloGuard modulo="fiscal:confronto-xml"><ConfrontoXML /></ModuloGuard>} />
               <Route path="/confronto-xml/fechamento/:fechamentoId" element={<ModuloGuard modulo="fiscal:confronto-xml"><ConfrontoXMLFechamentoDetalhe /></ModuloGuard>} />
               <Route path="/conciliacao-iss" element={<ModuloGuard modulo="fiscal:conciliacao-iss"><ConciliacaoISS /></ModuloGuard>} />
