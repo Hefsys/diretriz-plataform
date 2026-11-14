@@ -4,7 +4,7 @@ import {
   Users, KeyRound, MailOpen, ChevronRight, Stethoscope,
   Banknote, CreditCard, ListChecks, Package, UserCheck, ClipboardList,
   CalendarDays, BarChart2, User, BookOpen, Bot, TrendingUp, FileBarChart,
-  ScanSearch, Receipt, Briefcase, UserPlus, Wallet, Ticket, Calculator, FileSearch,
+  ScanSearch, Receipt, Briefcase, UserPlus, Wallet, Ticket, Calculator, FileSearch, AlarmClock, ShieldCheck,
 } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -67,6 +67,7 @@ export function AppSidebar() {
     { title: "Certidões",          url: "/certidoes",        icon: FileCheck,   moduleId: "certidoes:dashboard" },
     { title: "Caixas Postais",     url: "/caixas-postais",   icon: MailOpen,    moduleId: "caixas:dashboard" },
     { title: "Certificados",       url: "/certificados",     icon: KeyRound,    moduleId: "certificados:ativos" },
+    { title: "Prazos Acordados",   url: "/prazos",           icon: AlarmClock,  moduleId: "prazos:controle" },
   ].filter(item => temModulo(item.moduleId));
 
   const financeiroItems = [
@@ -94,6 +95,7 @@ export function AppSidebar() {
     { title: "Apuração Lucro Presumido", url: "/fiscal/apuracao-lp", icon: Calculator, moduleId: "fiscal:apuracao-lp" },
     { title: "Confronto XML",            url: "/confronto-xml",      icon: ScanSearch, moduleId: "fiscal:confronto-xml" },
     { title: "Conciliação ISS",          url: "/conciliacao-iss",    icon: Receipt,    moduleId: "fiscal:conciliacao-iss" },
+    { title: "Fronteira ICMS",           url: "/fiscal/fronteira",   icon: ShieldCheck, moduleId: "fiscal:fronteira" },
   ].filter(item => temModulo(item.moduleId));
 
   const relatoriosItems = [

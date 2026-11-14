@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.processar-comprovante]
 verify_jwt = true
+
+[functions.alertar-prazos]
+verify_jwt = false

@@ -1,4 +1,4 @@
-import { FileCheck, KeyRound, MailOpen, Banknote, ClipboardList, FileBarChart, Briefcase, Calculator, type LucideIcon } from "lucide-react";
+import { AlarmClock, FileCheck, KeyRound, MailOpen, Banknote, ClipboardList, FileBarChart, Briefcase, Calculator, type LucideIcon } from "lucide-react";
 
 export type ModuleId = string;
 
@@ -41,6 +41,16 @@ export const MODULES: { id: ModuleId; label: string; url: string; icon: LucideIc
     subModules: [
       { id: "caixas:dashboard", label: "Dashboard" },
       { id: "caixas:mensagens", label: "Mensagens" }
+    ]
+  },
+  {
+    id: "prazos",
+    label: "Prazos Acordados",
+    url: "/prazos",
+    icon: AlarmClock,
+    description: "Atividades com prazo combinado com o supervisor e aviso por e-mail no atraso",
+    subModules: [
+      { id: "prazos:controle", label: "Controle de prazos" }
     ]
   },
   {
@@ -91,7 +101,8 @@ export const MODULES: { id: ModuleId; label: string; url: string; icon: LucideIc
     subModules: [
       { id: "fiscal:apuracao-lp", label: "Apuração Lucro Presumido" },
       { id: "fiscal:confronto-xml", label: "Confronto XML" },
-      { id: "fiscal:conciliacao-iss", label: "Conciliação ISS" }
+      { id: "fiscal:conciliacao-iss", label: "Conciliação ISS" },
+      { id: "fiscal:fronteira", label: "Fronteira (auditoria ICMS SEFAZ-PE)" }
     ]
   },
   {
