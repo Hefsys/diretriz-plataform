@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { calcularNotasOficiais } from "@/lib/fronteira/contexto";
 import { FonteLegal } from "@/components/fronteira/FonteLegal";
+import { ExplicacaoIA } from "@/components/fronteira/ExplicacaoIA";
 import { useCamposXml } from "@/lib/fronteira/useCamposXml";
 
 import { Button } from "@/components/ui/button";
@@ -377,9 +378,6 @@ export default function FronteiraAuditoria() {
           <p className="max-w-2xl text-sm text-muted-foreground">Envie o extrato SEFAZ-PE e os XMLs das NF-e — a conferência é feita automaticamente.</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button asChild variant="outline" size="sm"><Link to="/fiscal/fronteira/empresas">Perfis fiscais</Link></Button>
-          <Button asChild variant="outline" size="sm"><Link to="/fiscal/fronteira/historico">Histórico</Link></Button>
-          {isAdmin && <Button asChild variant="ghost" size="sm"><Link to="/fiscal/fronteira/importar">Importar do sistema antigo</Link></Button>}
           {(pdfFile || xmlFiles.length > 0) && (
             <Button variant="outline" size="sm" onClick={limpar}>
               <RotateCcw className="mr-1.5 h-4 w-4" />
@@ -443,9 +441,9 @@ export default function FronteiraAuditoria() {
         />
         <DropZone
           titulo="Notas fiscais"
-          descricao="Arraste os XMLs ou um .zip com as notas."
+          descricao="Arraste XMLs, PDFs (DANFE) ou um .zip com as notas."
           icone={<FileArchive className="h-8 w-8" />}
-          accept=".xml,.zip,application/xml,text/xml,application/zip"
+          accept=".xml,.pdf,.zip,application/xml,text/xml,application/pdf,application/zip"
           multiple
           status={erro && xmlFiles.length > 0 ? "erro" : statusXml}
           resumo={
@@ -1320,6 +1318,15 @@ function MemoriaDialog({
                   {m.avisos?.map((aviso, i) => <p key={i} className="text-muted-foreground">{aviso}</p>)}
                   {m.recolhimento && <><KV label="Código de receita" value={m.recolhimento.codigoReceita} /><p>{m.recolhimento.prazo}</p><FonteLegal {...m.recolhimento.fundamento} /></>}
                 </section>
+              )}
+
+              {m.suportado && (m.trace?.length ?? 0) > 0 && (
+                <ExplicacaoIA
+                  passos={(m.trace ?? []).map((p) => ({ passo: p.passo, valor: p.valor, detalhe: p.detalhe, fundamento: p.fundamento }))}
+                  avisos={m.avisos ?? []}
+                  valor={linha.icmsCalculado}
+                  dataRef={m.dataDocumento}
+                />
               )}
 
               {/* Conferência */}

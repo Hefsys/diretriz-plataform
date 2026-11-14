@@ -17,7 +17,7 @@ import { casarEmpresas, clienteLegado, importarTudo, type Casamento, type Resumo
  * fiscais, histórico) para a plataforma. Só administradores.
  */
 export default function FronteiraImportar() {
-  const { isAdmin } = useAuth();
+  const { isAdmin, ownerUserId } = useAuth();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [legado, setLegado] = useState<SupabaseClient | null>(null);
@@ -54,11 +54,11 @@ export default function FronteiraImportar() {
   }
 
   async function importar() {
-    if (!legado || !casamentos) return;
+    if (!legado || !casamentos || !ownerUserId) return;
     setOcupado(true);
     setResumo(null);
     try {
-      setResumo(await importarTudo(legado, casamentos, setProgresso));
+      setResumo(await importarTudo(legado, casamentos, ownerUserId, setProgresso));
       toast.success("Importação concluída");
     } catch (err) {
       toast.error("Erro na importação", { description: (err as Error).message });
@@ -71,11 +71,10 @@ export default function FronteiraImportar() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
-        <Link to="/fiscal/fronteira" className="mb-2 inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground"><ArrowLeft className="h-3.5 w-3.5" />Auditoria</Link>
         <p className="text-xs font-medium uppercase tracking-wide text-primary">Fiscal · Fronteira</p>
         <h1 className="flex items-center gap-2 text-2xl font-bold"><DatabaseZap className="h-6 w-6 text-primary" />Importar do sistema antigo</h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
-          Copia fórmulas, NCMs, MVAs, alíquotas, pautas, anexos de CNAE, campos do XML, perfis fiscais e o histórico de auditorias do Fronteira antigo para a plataforma.
+          Copia fórmulas, NCMs, MVAs, alíquotas, pautas, anexos de CNAE, campos do XML, perfis fiscais, histórico de auditorias e o Acervo legal (informativos, trechos, regras e PDFs) do Fronteira antigo para a plataforma.
           Pode rodar de novo quando quiser: nada é duplicado.
         </p>
       </div>
@@ -138,7 +137,7 @@ export default function FronteiraImportar() {
           <CardHeader><CardTitle className="flex items-center gap-2 text-base"><CheckCircle2 className="h-5 w-5 text-emerald-600" />Importação concluída</CardTitle></CardHeader>
           <CardContent>
             <table className="w-full text-sm">
-              <thead className="text-left text-muted-foreground"><tr><th className="py-1 font-medium">Tabela</th><th className="py-1 text-right font-medium">Importadas</th><th className="py-1 text-right font-medium">Ignoradas (empresa sem par)</th></tr></thead>
+              <thead className="text-left text-muted-foreground"><tr><th className="py-1 font-medium">Tabela</th><th className="py-1 text-right font-medium">Importadas</th><th className="py-1 text-right font-medium">Ignoradas / com falha</th></tr></thead>
               <tbody>
                 {resumo.map((r) => (
                   <tr key={r.tabela} className="border-t"><td className="py-1.5">{r.tabela.replace(/_/g, " ")}</td><td className="py-1.5 text-right tabular-nums">{r.importadas}</td><td className="py-1.5 text-right tabular-nums">{r.ignoradas || "—"}</td></tr>

@@ -1276,12 +1276,24 @@ export async function textoDePdf(buf: ArrayBuffer): Promise<string> {
   return texto;
 }
 
-/**
- * DANFE em PDF: a leitura depende de IA (etapa 2 da integração na plataforma).
- * Por enquanto, orienta o usuário a enviar o XML da nota.
- */
-async function parseDanfePdf(nome: string, _buf: ArrayBuffer): Promise<NotaXML | null> {
-  throw new Error(`${nome}: leitura de DANFE em PDF ainda não disponível na plataforma — envie o XML da nota (ou um .zip com os XMLs).`);
+const cacheDanfe = new Map<string, NotaXML | null>();
+
+/** Lê um DANFE em PDF e converte em NotaXML (IA na função fronteira-ia). */
+async function parseDanfePdf(nome: string, buf: ArrayBuffer): Promise<NotaXML | null> {
+  const chave = `${nome}:${buf.byteLength}`;
+  const cached = cacheDanfe.get(chave);
+  if (cached !== undefined) return cached;
+  const texto = await textoDePdf(buf);
+  if (texto.replace(/\s/g, '').length < 50) {
+    throw new Error(`${nome}: PDF sem texto (escaneado) — não é possível ler.`);
+  }
+  const { lerDanfe } = await import('./ia');
+  const r = await lerDanfe(texto);
+  if (!r.xml) throw new Error(`${nome}: ${r.erro}`);
+  const nota = parseXMLNFe(r.xml);
+  if (nota) nota.nomeArquivo = nome;
+  cacheDanfe.set(chave, nota);
+  return nota;
 }
 
 /** Parser leve só para validação prévia (sem processar extrato). Aceita XML, PDF (DANFE) e ZIP. */

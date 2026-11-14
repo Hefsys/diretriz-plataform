@@ -40,9 +40,9 @@ async function lerTudo(sb: SupabaseClient, tabela: string): Promise<Linha[]> {
 /** Mantém só as colunas que existem na tabela de destino. */
 const pegar = (l: Linha, cols: string[]): Linha => Object.fromEntries(cols.filter((c) => c in l).map((c) => [c, l[c]]));
 
-async function gravar(tabela: string, linhas: Linha[]) {
+async function gravar(tabela: string, linhas: Linha[], onConflict = "id") {
   for (let i = 0; i < linhas.length; i += 500) {
-    const { error } = await db.from(tabela).upsert(linhas.slice(i, i + 500), { onConflict: "id" });
+    const { error } = await db.from(tabela).upsert(linhas.slice(i, i + 500), { onConflict });
     if (error) throw new Error(`${tabela}: ${error.message}`);
   }
 }
@@ -60,6 +60,9 @@ const TABELAS_REFERENCIA: { origem: string; destino: string; cols: string[] }[] 
   { origem: "logicas_calculo", destino: "ff_logicas_calculo", cols: ["id", "nome", "descricao", "formula_codigo", "parametros", "campos_usuario", "fluxo", "ativa", "created_at"] },
   { origem: "logica_ncm_legislacao", destino: "ff_logica_ncm_legislacao", cols: ["id", "logica_id", "ncm", "descricao_produto", "legislacao_valor", "unidade", "fluxo", ...VIG, "created_at"] },
 ];
+const COLS_FONTE = ["id", "chave", "titulo", "arquivo", "categoria", "atualizado_em", "vigencia_inicio", "vigencia_fim", "status", "substituido_por", "paginas", "observacao", "created_at"];
+const COLS_TRECHO = ["id", "fonte_id", "item", "titulo", "caminho", "parte", "fundamento", "fundamento_herdado", "texto", "created_at"];
+const COLS_REGRA = ["id", "nome", "tipo", "descricao", "condicoes", "formula", "parametros", "codigo_receita", "prazo_recolhimento", "fundamentos", "vigencia_inicio", "vigencia_fim", "exemplos_oficiais", "observacoes", "implementada_no_motor", "status", "validado_em", "created_at"];
 const COLS_CAMPOS = ["id", "codigo", "label", "descricao", "escopo", "tipo", "estrategia", "caminho", "origem_texto", "padrao_regex", "grupo_captura", "agregacao", "xml_amostra_path", "valor_esperado", "sistema", "ativo", "ordem", "criado_em", "atualizado_em"];
 const COLS_PERFIL = ["id", "vigencia_inicio", "vigencia_fim", "cnae", "porte", "regime", "flags", "sistematicas_especiais", "aliquota_interna_default", "created_at"];
 const COLS_SESSAO = ["id", "periodo_fiscal", "numero_extrato", "passo_atual", "status", "logica_calculo_id", "inputs_usuario", "total_casos", "total_calculados", "total_corretos", "total_divergencia_maior", "total_divergencia_menor", "total_sem_xml", "total_xmls_enviados", "total_xmls_ignorados", "total_xmls_descartados", "total_sefaz_sem_xml", "valor_recuperavel", "created_at", "concluida_em"];
@@ -94,7 +97,7 @@ export type ResumoImportacao = { tabela: string; importadas: number; ignoradas: 
  * Copia tudo. Perfis e auditorias de empresas que não casaram com nenhuma
  * empresa da plataforma são ignorados (e contados no resumo).
  */
-export async function importarTudo(sb: SupabaseClient, casamentos: Casamento[], progresso: (msg: string) => void): Promise<ResumoImportacao> {
+export async function importarTudo(sb: SupabaseClient, casamentos: Casamento[], escritorioId: string, progresso: (msg: string) => void): Promise<ResumoImportacao> {
   const resumo: ResumoImportacao = [];
   const mapa = new Map(casamentos.filter((c) => c.empresaId).map((c) => [c.legado.id, c.empresaId as string]));
 
@@ -139,6 +142,49 @@ export async function importarTudo(sb: SupabaseClient, casamentos: Casamento[], 
   const ajustes = (await lerTudo(sb, "ajustes_conferencia")).map((a) => ({ ...pegar(a, COLS_AJUSTE), usuario_id: null }));
   await gravar("ff_ajustes_conferencia", ajustes);
   resumo.push({ tabela: "ajustes_conferencia", importadas: ajustes.length, ignoradas: 0 });
+
+  // ───── Acervo legal: informativos, trechos, regras e PDFs ─────
+  progresso("Copiando informativos do acervo…");
+  const fontes = await lerTudo(sb, "fontes_legais");
+  const { data: jaTenho } = await db.from("ff_fontes_legais").select("id, storage_path");
+  const pdfAtual = new Map(((jaTenho ?? []) as { id: string; storage_path: string | null }[]).map((f) => [f.id, f.storage_path]));
+  await gravar("ff_fontes_legais", fontes.map((f) => ({ ...pegar(f, COLS_FONTE), storage_path: pdfAtual.get(f.id as string) ?? null })));
+  resumo.push({ tabela: "informativos (acervo)", importadas: fontes.length, ignoradas: 0 });
+
+  progresso("Copiando trechos legais…");
+  const trechos = (await lerTudo(sb, "trechos_legais")).map((t) => pegar(t, COLS_TRECHO));
+  await gravar("ff_trechos_legais", trechos);
+  resumo.push({ tabela: "trechos legais", importadas: trechos.length, ignoradas: 0 });
+
+  progresso("Copiando regras fiscais…");
+  const regras = (await lerTudo(sb, "regras_fiscais")).map((r) => pegar(r, COLS_REGRA));
+  await gravar("ff_regras_fiscais", regras, "escritorio_id,id");
+  resumo.push({ tabela: "regras fiscais", importadas: regras.length, ignoradas: 0 });
+
+  // PDFs: baixa do bucket antigo e envia para o bucket privado ff-acervo (pasta do escritório).
+  const comPdf = fontes.filter((f) => f.storage_path);
+  let copiados = 0, pulados = 0;
+  const falhas: string[] = [];
+  for (let i = 0; i < comPdf.length; i += 3) {
+    progresso(`Copiando PDFs do acervo… ${Math.min(i + 3, comPdf.length)}/${comPdf.length}`);
+    await Promise.all(comPdf.slice(i, i + 3).map(async (f) => {
+      const destino = `${escritorioId}/informativos/${f.chave}.pdf`;
+      if (pdfAtual.get(f.id as string) === destino) { pulados++; return; }
+      try {
+        const baixado = await sb.storage.from("informativos-sefaz").download(f.storage_path as string);
+        if (baixado.error || !baixado.data) throw new Error(baixado.error?.message ?? "download vazio");
+        const up = await db.storage.from("ff-acervo").upload(destino, baixado.data, { upsert: true, contentType: "application/pdf" });
+        if (up.error) throw new Error(up.error.message);
+        const upd = await db.from("ff_fontes_legais").update({ storage_path: destino }).eq("id", f.id as string);
+        if (upd.error) throw new Error(upd.error.message);
+        copiados++;
+      } catch (e) {
+        falhas.push(`${f.chave}: ${(e as Error).message}`);
+      }
+    }));
+  }
+  resumo.push({ tabela: "PDFs do acervo", importadas: copiados + pulados, ignoradas: falhas.length });
+  if (falhas.length) console.warn("PDFs não copiados:", falhas);
 
   return resumo;
 }

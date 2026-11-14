@@ -41,11 +41,17 @@ import ConfrontoXML from "./pages/ConfrontoXML";
 import ConfrontoXMLFechamentoDetalhe from "./pages/ConfrontoXMLFechamentoDetalhe";
 import ConciliacaoISS from "./pages/ConciliacaoISS";
 import PrazosAcordados from "./pages/PrazosAcordados";
+import { FronteiraLayout } from "@/components/fronteira/FronteiraLayout";
 import FronteiraAuditoria from "./pages/fiscal/fronteira/FronteiraAuditoria";
 import FronteiraEmpresas from "./pages/fiscal/fronteira/FronteiraEmpresas";
 import FronteiraEmpresa from "./pages/fiscal/fronteira/FronteiraEmpresa";
 import FronteiraHistorico from "./pages/fiscal/fronteira/FronteiraHistorico";
 import FronteiraImportar from "./pages/fiscal/fronteira/FronteiraImportar";
+import FronteiraFormulas from "./pages/fiscal/fronteira/FronteiraFormulas";
+import FronteiraFormula from "./pages/fiscal/fronteira/FronteiraFormula";
+import FronteiraCampos from "./pages/fiscal/fronteira/FronteiraCampos";
+import FronteiraRegras from "./pages/fiscal/fronteira/FronteiraRegras";
+import FronteiraAcervo from "./pages/fiscal/fronteira/FronteiraAcervo";
 import DpAdmissoes from "./pages/dp/DpAdmissoes";
 import DpFolha from "./pages/dp/DpFolha";
 import DpCompetencia from "./pages/dp/DpCompetencia";
@@ -108,11 +114,18 @@ const App = () => (
               <Route path="/comissao-esocial/historico" element={<ModuloGuard modulo="dp:analise-folha"><ComissaoESocialHistorico /></ModuloGuard>} />
               <Route path="/confronto-xml" element={<ModuloGuard modulo="fiscal:confronto-xml"><ConfrontoXML /></ModuloGuard>} />
               <Route path="/confronto-xml/fechamento/:fechamentoId" element={<ModuloGuard modulo="fiscal:confronto-xml"><ConfrontoXMLFechamentoDetalhe /></ModuloGuard>} />
-              <Route path="/fiscal/fronteira" element={<ModuloGuard modulo="fiscal:fronteira"><FronteiraAuditoria /></ModuloGuard>} />
-              <Route path="/fiscal/fronteira/empresas" element={<ModuloGuard modulo="fiscal:fronteira"><FronteiraEmpresas /></ModuloGuard>} />
-              <Route path="/fiscal/fronteira/empresas/:empresaId" element={<ModuloGuard modulo="fiscal:fronteira"><FronteiraEmpresa /></ModuloGuard>} />
-              <Route path="/fiscal/fronteira/historico" element={<ModuloGuard modulo="fiscal:fronteira"><FronteiraHistorico /></ModuloGuard>} />
-              <Route path="/fiscal/fronteira/importar" element={<ModuloGuard modulo="fiscal:fronteira"><FronteiraImportar /></ModuloGuard>} />
+              <Route path="/fiscal/fronteira" element={<ModuloGuard modulo="fiscal:fronteira"><FronteiraLayout /></ModuloGuard>}>
+                <Route index element={<FronteiraAuditoria />} />
+                <Route path="empresas" element={<FronteiraEmpresas />} />
+                <Route path="empresas/:empresaId" element={<FronteiraEmpresa />} />
+                <Route path="historico" element={<FronteiraHistorico />} />
+                <Route path="importar" element={<FronteiraImportar />} />
+                <Route path="formulas" element={<FronteiraFormulas />} />
+                <Route path="formulas/:logicaId" element={<FronteiraFormula />} />
+                <Route path="campos" element={<FronteiraCampos />} />
+                <Route path="regras" element={<FronteiraRegras />} />
+                <Route path="acervo" element={<FronteiraAcervo />} />
+              </Route>
               <Route path="/conciliacao-iss" element={<ModuloGuard modulo="fiscal:conciliacao-iss"><ConciliacaoISS /></ModuloGuard>} />
               <Route path="/dp/admissoes" element={<ModuloGuard modulo="dp:admissoes"><DpAdmissoes /></ModuloGuard>} />
               <Route path="/dp/variaveis" element={<ModuloGuard modulo="dp:variaveis"><DpFolha key="variaveis" modulo="variaveis" /></ModuloGuard>} />
